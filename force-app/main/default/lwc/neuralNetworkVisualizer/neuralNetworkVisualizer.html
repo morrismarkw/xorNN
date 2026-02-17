@@ -1,0 +1,366 @@
+<template>
+    <lightning-card title="Neural Network XOR Visualizer" icon-name="custom:custom63">
+        <div class="slds-p-around_medium">
+
+            <!-- CONFIGURATION SECTION -->
+            <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                        <h2 class="slds-text-heading_small slds-m-bottom_small">Network Configuration</h2>
+                        <div class="slds-grid slds-gutters slds-wrap">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-m-bottom_small">
+                                <lightning-combobox
+                                    name="hiddenLayers"
+                                    label="Hidden Layers"
+                                    value={selectedHiddenLayers}
+                                    options={hiddenLayerOptions}
+                                    onchange={handleHiddenLayersChange}
+                                    disabled={isTraining}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-m-bottom_small">
+                                <lightning-combobox
+                                    name="neuronsPerLayer"
+                                    label="Neurons per Hidden Layer"
+                                    value={selectedNeuronsPerLayer}
+                                    options={neuronsPerLayerOptions}
+                                    onchange={handleNeuronsChange}
+                                    disabled={isTraining}>
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-m-bottom_small">
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">
+                                        Learning Rate: <strong>{learningRateDisplay}</strong>
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <input
+                                            type="range"
+                                            class="learning-rate-slider"
+                                            min="0.01"
+                                            max="10"
+                                            step="0.01"
+                                            value={learningRate}
+                                            oninput={handleLearningRateChange}
+                                            onchange={handleLearningRateCommit}
+                                            disabled={isTraining}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT: Network Viz + Controls -->
+            <div class="slds-grid slds-gutters slds-wrap">
+
+                <!-- LEFT COLUMN: Network Visualization -->
+                <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-3">
+                    <div class="slds-box network-viz-container">
+                        <h2 class="slds-text-heading_small slds-m-bottom_small">Network Architecture</h2>
+                        <svg class="network-svg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+                            <!-- Layer Labels -->
+                            <template for:each={layerLabels} for:item="label">
+                                <text key={label.id} x={label.x} y={label.y}
+                                    class="layer-label" text-anchor="middle">{label.text}</text>
+                            </template>
+
+                            <!-- Connections (render first so they're behind nodes) -->
+                            <template for:each={networkVisualization.connections} for:item="conn">
+                                <line key={conn.id}
+                                    x1={conn.x1} y1={conn.y1}
+                                    x2={conn.x2} y2={conn.y2}
+                                    stroke={conn.stroke}
+                                    stroke-width={conn.strokeWidth}>
+                                </line>
+                            </template>
+
+                            <!-- Nodes -->
+                            <template for:each={networkVisualization.nodes} for:item="node">
+                                <g key={node.id}>
+                                    <circle
+                                        cx={node.cx} cy={node.cy} r={node.r}
+                                        fill={node.fill} stroke={node.stroke}
+                                        stroke-width={node.strokeWidth}>
+                                    </circle>
+                                    <text x={node.labelX} y={node.labelY}
+                                        class="node-label" text-anchor="middle">{node.label}</text>
+                                </g>
+                            </template>
+                        </svg>
+
+                        <!-- Legend -->
+                        <div class="slds-grid slds-wrap slds-m-top_small legend">
+                            <div class="slds-col slds-size_1-of-2 slds-p-around_xx-small">
+                                <span class="legend-line positive"></span> Positive Weight
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-p-around_xx-small">
+                                <span class="legend-line negative"></span> Negative Weight
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-around_xx-small">
+                                Line thickness = weight magnitude | Node color = activation level
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Controls + Stats -->
+                <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+
+                    <!-- Training Controls -->
+                    <div class="slds-box slds-m-bottom_small">
+                        <h2 class="slds-text-heading_small slds-m-bottom_small">Training Controls</h2>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-button
+                                    label={trainButtonLabel}
+                                    variant={trainButtonVariant}
+                                    onclick={handleTrain}
+                                    disabled={isTraining}
+                                    class="full-width-btn">
+                                </lightning-button>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-button
+                                    label="Reset"
+                                    variant="destructive"
+                                    onclick={handleReset}
+                                    class="full-width-btn">
+                                </lightning-button>
+                            </div>
+                        </div>
+                        <template if:true={isTraining}>
+                            <div class="slds-m-top_small">
+                                <lightning-button
+                                    label="Stop Training"
+                                    variant="neutral"
+                                    onclick={handleStop}
+                                    class="full-width-btn">
+                                </lightning-button>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Training Stats -->
+                    <div class="slds-box slds-m-bottom_small">
+                        <h2 class="slds-text-heading_small slds-m-bottom_small">Training Stats</h2>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-label">Epoch</div>
+                                <div class="stat-value">{epochDisplay}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Loss</div>
+                                <div class="stat-value">{lossDisplay}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Accuracy</div>
+                                <div class="stat-value">{accuracyPercentage}%</div>
+                            </div>
+                        </div>
+
+                        <template if:true={trainingComplete}>
+                            <div class="slds-m-top_small">
+                                <span class="slds-badge slds-badge_success">Training Complete</span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Loss Chart -->
+                    <div class="slds-box slds-m-bottom_small">
+                        <h2 class="slds-text-heading_small slds-m-bottom_small">Loss Over Time</h2>
+                        <template if:true={hasLossData}>
+                            <svg class="loss-chart" viewBox="0 0 400 150" preserveAspectRatio="xMidYMid meet">
+                                <!-- Axes -->
+                                <line x1={lossChartAxes.xAxis.x1} y1={lossChartAxes.xAxis.y1}
+                                    x2={lossChartAxes.xAxis.x2} y2={lossChartAxes.xAxis.y2}
+                                    class="chart-axis"></line>
+                                <line x1={lossChartAxes.yAxis.x1} y1={lossChartAxes.yAxis.y1}
+                                    x2={lossChartAxes.yAxis.x2} y2={lossChartAxes.yAxis.y2}
+                                    class="chart-axis"></line>
+
+                                <!-- Axis Labels -->
+                                <text x={lossChartAxes.xLabel.x} y={lossChartAxes.xLabel.y}
+                                    class="axis-label" text-anchor="middle">{lossChartAxes.xLabel.text}</text>
+                                <text x={lossChartAxes.yLabel.x} y={lossChartAxes.yLabel.y}
+                                    class="axis-label" text-anchor="middle"
+                                    transform="rotate(-90, 15, 85)">{lossChartAxes.yLabel.text}</text>
+
+                                <!-- Loss Curve -->
+                                <path d={lossChartPath} class="loss-curve"></path>
+                            </svg>
+                        </template>
+                        <template if:false={hasLossData}>
+                            <div class="slds-text-color_weak slds-text-align_center slds-p-around_medium">
+                                Start training to see loss curve
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- XOR Truth Table -->
+            <div class="slds-m-top_medium">
+                <div class="slds-box">
+                    <h2 class="slds-text-heading_small slds-m-bottom_small">XOR Truth Table - Live Predictions</h2>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Inputs">Inputs (A, B)</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Expected">Expected (A XOR B)</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Predicted">Predicted (Raw)</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Rounded">Rounded</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Status">Status</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={predictions} for:item="pred">
+                                <tr key={pred.inputs}>
+                                    <td data-label="Inputs">
+                                        <div class="slds-truncate">{pred.inputs}</div>
+                                    </td>
+                                    <td data-label="Expected">
+                                        <div class="slds-truncate">{pred.expected}</div>
+                                    </td>
+                                    <td data-label="Predicted">
+                                        <div class="slds-truncate">{pred.predicted}</div>
+                                    </td>
+                                    <td data-label="Rounded">
+                                        <div class="slds-truncate">{pred.predictedRounded}</div>
+                                    </td>
+                                    <td data-label="Status">
+                                        <template if:true={pred.correct}>
+                                            <span class="slds-badge slds-badge_success">Correct</span>
+                                        </template>
+                                        <template if:false={pred.correct}>
+                                            <span class="slds-badge slds-badge_inverse">Incorrect</span>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- RESULTS SECTION (shown after training completes) -->
+            <template if:true={showResults}>
+                <div class="slds-m-top_large">
+                    <div class="slds-box slds-theme_default">
+                        <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                            <h2 class="slds-text-heading_medium">Trained Model Results</h2>
+                            <lightning-button
+                                label="Export Results (JSON)"
+                                variant="neutral"
+                                icon-name="utility:download"
+                                onclick={handleExportResults}>
+                            </lightning-button>
+                        </div>
+
+                        <!-- Training Summary -->
+                        <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_x-small">Training Summary</h3>
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-around_xx-small">
+                                    <strong>Total Epochs:</strong> {epochDisplay}
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-around_xx-small">
+                                    <strong>Final Loss:</strong> {lossDisplay}
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-around_xx-small">
+                                    <strong>Learning Rate:</strong> {learningRateDisplay}
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-around_xx-small">
+                                    <strong>Accuracy:</strong> {accuracyPercentage}%
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final Activations Table -->
+                        <div class="slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_x-small">Final Predictions</h3>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col"><div class="slds-truncate">Inputs</div></th>
+                                        <th scope="col"><div class="slds-truncate">Expected</div></th>
+                                        <th scope="col"><div class="slds-truncate">Output</div></th>
+                                        <th scope="col"><div class="slds-truncate">Rounded</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={finalActivationsData} for:item="act">
+                                        <tr key={act.id}>
+                                            <td><div class="slds-truncate">{act.inputs}</div></td>
+                                            <td><div class="slds-truncate">{act.expected}</div></td>
+                                            <td><div class="slds-truncate">{act.output}</div></td>
+                                            <td><div class="slds-truncate">{act.rounded}</div></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Weights Table -->
+                        <div class="slds-m-bottom_medium">
+                            <h3 class="slds-text-heading_small slds-m-bottom_x-small">Final Weights</h3>
+                            <div class="table-scroll-container">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th scope="col"><div class="slds-truncate">Connection</div></th>
+                                            <th scope="col"><div class="slds-truncate">Weight</div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={finalWeightsData} for:item="w">
+                                            <tr key={w.id}>
+                                                <td><div class="slds-truncate">{w.description}</div></td>
+                                                <td><div class="slds-truncate">{w.value}</div></td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Biases Table -->
+                        <div>
+                            <h3 class="slds-text-heading_small slds-m-bottom_x-small">Final Biases</h3>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col"><div class="slds-truncate">Layer</div></th>
+                                        <th scope="col"><div class="slds-truncate">Neuron</div></th>
+                                        <th scope="col"><div class="slds-truncate">Bias</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={finalBiasesData} for:item="b">
+                                        <tr key={b.id}>
+                                            <td><div class="slds-truncate">{b.layer}</div></td>
+                                            <td><div class="slds-truncate">{b.neuron}</div></td>
+                                            <td><div class="slds-truncate">{b.value}</div></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>

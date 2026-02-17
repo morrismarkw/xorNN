@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>User__c</columns>
+    <columns>Action__c</columns>
+    <columns>Epochs__c</columns>
+    <columns>Final_Loss__c</columns>
+    <columns>Learning_Rate__c</columns>
+    <columns>Timestamp__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

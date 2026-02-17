@@ -1,0 +1,230 @@
+/* Neural Network Visualizer Styles */
+
+/* Network SVG Container */
+.network-viz-container {
+    background: linear-gradient(135deg, #f4f6f9 0%, #eef1f6 100%);
+    border-radius: 8px;
+}
+
+.network-svg {
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+    max-height: 400px;
+}
+
+/* Node styling */
+.node-label {
+    font-size: 11px;
+    font-weight: bold;
+    fill: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+.layer-label {
+    font-size: 12px;
+    font-weight: 600;
+    fill: #3e3e3c;
+}
+
+/* Legend */
+.legend {
+    font-size: 12px;
+    color: #706e6b;
+}
+
+.legend-line {
+    display: inline-block;
+    width: 30px;
+    height: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+    border-radius: 2px;
+}
+
+.legend-line.positive {
+    background: linear-gradient(90deg, rgba(75, 202, 129, 0.3), rgba(75, 202, 129, 0.9));
+}
+
+.legend-line.negative {
+    background: linear-gradient(90deg, rgba(234, 82, 82, 0.3), rgba(234, 82, 82, 0.9));
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 12px 8px;
+    background: #f4f6f9;
+    border-radius: 6px;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #706e6b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1589ee;
+}
+
+/* Loss Chart */
+.loss-chart {
+    width: 100%;
+    height: auto;
+    background: #fafaf9;
+    border-radius: 4px;
+}
+
+.chart-axis {
+    stroke: #c9c7c5;
+    stroke-width: 1;
+}
+
+.axis-label {
+    font-size: 10px;
+    fill: #706e6b;
+}
+
+.loss-curve {
+    fill: none;
+    stroke: #1589ee;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Learning Rate Slider */
+.learning-rate-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #d8d8d8;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: 8px;
+}
+
+.learning-rate-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #1589ee;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.learning-rate-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #1589ee;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.learning-rate-slider:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Button styling */
+.full-width-btn {
+    width: 100%;
+}
+
+.full-width-btn lightning-button {
+    width: 100%;
+}
+
+/* Badge styling overrides */
+.slds-badge_success {
+    background-color: #04844b;
+    color: white;
+}
+
+.slds-badge_inverse {
+    background-color: #706e6b;
+    color: white;
+}
+
+/* Table scroll container for large tables */
+.table-scroll-container {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .stat-item {
+        padding: 8px 4px;
+    }
+
+    .stat-value {
+        font-size: 14px;
+    }
+
+    .stat-label {
+        font-size: 9px;
+    }
+}
+
+/* Animation for training indicator */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.training-indicator {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+/* Results section styling */
+.slds-theme_default {
+    background-color: #ffffff;
+}
+
+/* Box shadows for depth */
+.slds-box {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+}
+
+/* Table enhancements */
+.slds-table thead th {
+    background-color: #f3f2f2;
+}
+
+/* Network node hover effect (when not training) */
+circle:hover {
+    filter: brightness(1.1);
+    cursor: pointer;
+}
+
+/* Connection line transitions */
+line {
+    transition: stroke-width 0.1s ease-out, stroke 0.1s ease-out;
+}
