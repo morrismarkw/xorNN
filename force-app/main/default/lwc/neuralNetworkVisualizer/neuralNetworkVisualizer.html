@@ -86,12 +86,20 @@
                                     </circle>
                                     <text x={node.labelX} y={node.labelY}
                                         class="node-label" text-anchor="middle">{node.label}</text>
+                                    <template if:true={node.hasBias}>
+                                        <text x={node.biasX} y={node.biasY}
+                                            class="bias-label" text-anchor="middle"
+                                            fill={node.biasColor}>{node.biasLabel}</text>
+                                    </template>
                                 </g>
                             </template>
                         </svg>
 
                         <!-- Legend -->
                         <div class="slds-grid slds-wrap slds-m-top_small legend">
+                            <div class="slds-col slds-size_1-of-1 slds-p-around_xx-small legend-header">
+                                <strong>Node value</strong> = activation (output after sigmoid, 0-1) | <strong>Node color</strong> = activation intensity
+                            </div>
                             <div class="slds-col slds-size_1-of-2 slds-p-around_xx-small">
                                 <span class="legend-line positive"></span> Positive Weight
                             </div>
@@ -99,7 +107,7 @@
                                 <span class="legend-line negative"></span> Negative Weight
                             </div>
                             <div class="slds-col slds-size_1-of-1 slds-p-around_xx-small">
-                                Line thickness = weight magnitude | Node color = activation level
+                                <strong>Line thickness</strong> = weight magnitude | <span class="bias-indicator">b:</span> = bias (<span class="bias-positive">green</span> = positive, <span class="bias-negative">red</span> = negative)
                             </div>
                         </div>
                     </div>

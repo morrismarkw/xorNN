@@ -674,6 +674,11 @@ export default class NeuralNetworkVisualizer extends LightningElement {
                 const intensity = Math.floor(activation * 200);
                 const fillColor = `rgb(${55 + intensity}, ${100 + intensity}, ${200})`;
 
+                // Get bias for this neuron (input layer has no bias)
+                const hasBias = l > 0;
+                const biasIndex = l - 1; // biases array is indexed from 0 for first hidden layer
+                const bias = hasBias && this.biases[biasIndex] ? this.biases[biasIndex][n] : 0;
+
                 nodes.push({
                     id: `node-${l}-${n}`,
                     cx: x,
@@ -685,7 +690,12 @@ export default class NeuralNetworkVisualizer extends LightningElement {
                     label: activation.toFixed(2),
                     labelX: x,
                     labelY: y + 5,
-                    layerLabel: l === 0 ? 'Input' : (l === layers.length - 1 ? 'Output' : `Hidden ${l}`)
+                    layerLabel: l === 0 ? 'Input' : (l === layers.length - 1 ? 'Output' : `Hidden ${l}`),
+                    hasBias: hasBias,
+                    biasLabel: hasBias ? `b: ${bias.toFixed(2)}` : '',
+                    biasX: x,
+                    biasY: y + 35,
+                    biasColor: bias >= 0 ? '#4bca81' : '#ea5252'
                 });
             }
         }

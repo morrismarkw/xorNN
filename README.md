@@ -28,7 +28,7 @@ Sometimes the best way to understand something is to build it somewhere it was n
 ## Features
 
 - **Configurable Network Topology**: 1-4 hidden layers, 1-8 neurons per layer
-- **Real-time SVG Visualization**: Watch weights and activations animate during training
+- **Real-time SVG Visualization**: Watch weights, biases, and activations animate during training
 - **Live Loss Chart**: See the loss curve update each epoch
 - **XOR Truth Table**: Live predictions vs expected outputs
 - **Activity Logging**: Every action logged to NN_Log__c via Lightning Data Service
@@ -69,6 +69,7 @@ CUSTOM OBJECT — NN_Log__c:
 - Custom object called "NN Log" (API name: NN_Log__c) to track user activity in the app
 - Fields: User__c (Lookup to User), Action__c (Text — e.g. "Training Started", "Training Completed", "Learning Rate Changed", "Reset"), Epochs__c (Number — epoch count at time of action), Final_Loss__c (Number — loss value at time of action), Learning_Rate__c (Number — current learning rate), Timestamp__c (DateTime)
 - Create an "All" list view showing all important fields (Name, User, Action, Epochs, Final_Loss, Learning_Rate, Timestamp, Created Date), available to all internal users
+- Create a page layout that includes all custom fields in a two-column format
 - Use Lightning Data Service via lightning/uiRecordApi createRecord to write NN_Log__c records from the component — no Apex classes
 
 CONFIGURABLE NETWORK ARCHITECTURE:
@@ -81,8 +82,10 @@ CONFIGURABLE NETWORK ARCHITECTURE:
 VISUALIZATION:
 - Render the full network diagram using SVG within the LWC template — scales dynamically with topology
 - Connection weights shown as line thickness and color (green for positive, red for negative)
-- Nodes display their current activation value during and after training
+- Nodes display their current activation value (sigmoid output, 0-1) during and after training
+- Bias values shown below each neuron (except input nodes), color-coded green/red for positive/negative
 - Network animates during training as weights and activations update in real time
+- Include a legend explaining: node values are activations, line thickness is weight magnitude, line color indicates positive/negative weights, and bias indicators
 
 TRAINED MODEL RESULTS PANEL:
 - After training completes, display a detailed results panel showing:
@@ -106,7 +109,7 @@ TECHNICAL CONSTRAINTS:
 - LWC reactive framework with tracked properties for all dynamic values
 - All rendering in HTML template with SVG — no D3 or external libraries
 - Training loop uses requestAnimationFrame or setTimeout so the UI updates between epochs rather than freezing
-- Generate every deployable file: LWC bundle (JS, HTML, CSS, js-meta.xml), custom object and field XML, list view XML, permission set XML, Lightning app XML, and custom tab XML — all in correct sfdx source format directory structure
+- Generate every deployable file: LWC bundle (JS, HTML, CSS, js-meta.xml), custom object and field XML, list view XML, page layout XML, permission set XML, Lightning app XML, and custom tab XML — all in correct sfdx source format directory structure
 - Deploy all components to the connected org using sf project deploy start
 
 ---

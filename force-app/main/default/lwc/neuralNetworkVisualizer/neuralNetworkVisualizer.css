@@ -28,6 +28,13 @@
     fill: #3e3e3c;
 }
 
+/* Bias label below nodes */
+.bias-label {
+    font-size: 9px;
+    font-weight: 600;
+    pointer-events: none;
+}
+
 /* Legend */
 .legend {
     font-size: 12px;
@@ -49,6 +56,21 @@
 
 .legend-line.negative {
     background: linear-gradient(90deg, rgba(234, 82, 82, 0.3), rgba(234, 82, 82, 0.9));
+}
+
+/* Bias legend indicators */
+.bias-indicator {
+    font-weight: 600;
+}
+
+.bias-positive {
+    color: #4bca81;
+    font-weight: 600;
+}
+
+.bias-negative {
+    color: #ea5252;
+    font-weight: 600;
 }
 
 /* Stats Grid */
