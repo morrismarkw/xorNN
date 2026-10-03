@@ -96,8 +96,15 @@
     {
       "id": "XOR-MONO-06",
       "action": "After all remote work is verified, discover local copies of xorNN, nn, and neuralnetwork and move the exact repository folders to the macOS Trash.",
-      "status": "working",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        {
+          "kind": "machine",
+          "reference": "path:.agent-standards/work.json",
+          "proves": "A name-and-remote inventory across dev, codex, and claude found only /Users/markmorris/dev/xorNN; it was verified clean and fully pushed, then moved to /Users/markmorris/.Trash/xorNN-2026-10-03."
+        }
+      ],
+      "no_test_reason": "Local cleanup is verified through path existence and Git state checks rather than an executable test."
     }
   ]
 }
