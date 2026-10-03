@@ -78,13 +78,25 @@
     {
       "id": "XOR-MONO-05",
       "action": "After remote verification, delete the private GitHub repositories morrismarkw/nn and morrismarkw/neuralnetwork and verify their removal.",
-      "status": "working",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        {
+          "kind": "reported",
+          "reference": "GitHub CLI deletion responses for morrismarkw/nn and morrismarkw/neuralnetwork",
+          "proves": "Both authorized private repositories were deleted after xorNN verification."
+        },
+        {
+          "kind": "machine",
+          "reference": "url:https://github.com/morrismarkw/xorNN",
+          "proves": "Post-deletion GitHub CLI checks returned not found for both obsolete repositories while public xorNN remained available on main."
+        }
+      ],
+      "no_test_reason": "Repository deletion is verified through GitHub's remote state rather than an executable test."
     },
     {
       "id": "XOR-MONO-06",
       "action": "After all remote work is verified, discover local copies of xorNN, nn, and neuralnetwork and move the exact repository folders to the macOS Trash.",
-      "status": "pending",
+      "status": "working",
       "evidence": []
     }
   ]
