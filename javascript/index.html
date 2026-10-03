@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Train and inspect a from-scratch neural network learning XOR."
+    />
+    <title>xorNN — JavaScript visualizer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <p class="eyebrow">FROM-SCRATCH NEURAL NETWORK</p>
+        <h1>Watch a tiny network learn <span>XOR.</span></h1>
+        <p>
+          No frameworks and no machine-learning library—just arrays, sigmoid
+          activations, backpropagation, and a browser.
+        </p>
+      </header>
+
+      <section
+        class="workspace"
+        aria-label="XOR network controls and visualization"
+      >
+        <aside class="panel controls">
+          <div>
+            <p class="section-label">NETWORK</p>
+            <h2>Configure</h2>
+          </div>
+
+          <label>
+            Hidden layers
+            <select id="hidden-layers">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </label>
+
+          <label>
+            Neurons per layer
+            <select id="neurons-per-layer">
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </select>
+          </label>
+
+          <label>
+            Learning rate
+            <output id="rate-output" for="learning-rate">1.00</output>
+            <input
+              id="learning-rate"
+              type="range"
+              min="0.05"
+              max="3"
+              step="0.05"
+              value="1"
+            />
+          </label>
+
+          <div class="actions">
+            <button id="train" class="primary" type="button">Train</button>
+            <button id="stop" type="button" disabled>Stop</button>
+            <button id="reset" type="button">Reset</button>
+          </div>
+
+          <dl class="metrics">
+            <div>
+              <dt>Epoch</dt>
+              <dd id="epoch">0</dd>
+            </div>
+            <div>
+              <dt>Loss</dt>
+              <dd id="loss">—</dd>
+            </div>
+          </dl>
+        </aside>
+
+        <section class="panel visualization">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">LIVE MODEL</p>
+              <h2>Network</h2>
+            </div>
+            <div class="legend" aria-label="Connection legend">
+              <span><i class="positive"></i> positive</span>
+              <span><i class="negative"></i> negative</span>
+            </div>
+          </div>
+          <svg
+            id="network"
+            viewBox="0 0 760 390"
+            role="img"
+            aria-label="Neural network diagram"
+          ></svg>
+          <p class="hint">
+            Line width shows weight magnitude. Node labels show the latest
+            activation.
+          </p>
+        </section>
+      </section>
+
+      <section class="results-grid">
+        <section class="panel truth-table">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">INFERENCE</p>
+              <h2>XOR truth table</h2>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Input A</th>
+                <th>Input B</th>
+                <th>Expected</th>
+                <th>Prediction</th>
+              </tr>
+            </thead>
+            <tbody id="predictions"></tbody>
+          </table>
+        </section>
+
+        <section class="panel loss-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">TRAINING</p>
+              <h2>Loss</h2>
+            </div>
+            <button id="export" type="button">Copy JSON</button>
+          </div>
+          <svg
+            id="loss-chart"
+            viewBox="0 0 520 220"
+            role="img"
+            aria-label="Training loss chart"
+          ></svg>
+          <p id="status" class="status" aria-live="polite">Ready to train.</p>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>

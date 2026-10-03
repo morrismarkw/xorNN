@@ -456,6 +456,7 @@ export default class NeuralNetworkVisualizer extends LightningElement {
         }
 
         // Schedule next frame
+        // eslint-disable-next-line @lwc/lwc/no-async-operation -- animation is intentional so the UI can repaint between batches
         this.animationFrameId = requestAnimationFrame(() => this.runTrainingLoop());
     }
 
@@ -656,7 +657,6 @@ export default class NeuralNetworkVisualizer extends LightningElement {
 
         const padding = 60;
         const layerSpacing = (this.svgWidth - 2 * padding) / (layers.length - 1);
-        const maxNeurons = Math.max(...layers);
 
         // Create nodes for each layer
         const nodePositions = [];

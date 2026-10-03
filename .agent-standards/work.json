@@ -1,0 +1,79 @@
+{
+  "items": [
+    {
+      "id": "XOR-MONO-01",
+      "action": "Move the existing Salesforce DX implementation into a salesforce/ package without losing tracked content or deploy configuration.",
+      "status": "done",
+      "evidence": [
+        {
+          "kind": "machine",
+          "reference": "path:salesforce/sfdx-project.json",
+          "proves": "A scripted SHA-256 comparison found all 33 original tracked files present and byte-for-byte unchanged after relocation, excluding the intentionally edited README."
+        },
+        {
+          "kind": "test",
+          "reference": "path:salesforce/package.json",
+          "proves": "The relocated package resolves its LWC source paths and passes ESLint after correcting the inherited unmatched Aura glob and two inherited lint findings.",
+          "command": "npm --prefix salesforce run lint",
+          "proof": "none"
+        }
+      ]
+    },
+    {
+      "id": "XOR-MONO-02",
+      "action": "Add a standalone browser JavaScript XOR neural-network implementation that preserves the useful algorithm and behavioral tests from morrismarkw/nn.",
+      "status": "done",
+      "evidence": [
+        {
+          "kind": "test",
+          "reference": "path:javascript/test/neural-network.test.js",
+          "proves": "Four dependency-free Node tests cover validation, a known forward pass, detached model shape, and deterministic XOR convergence.",
+          "command": "npm test",
+          "proof": "none"
+        }
+      ]
+    },
+    {
+      "id": "XOR-MONO-03",
+      "action": "Document the two implementations at the monorepo root and verify both implementation packages locally.",
+      "status": "done",
+      "evidence": [
+        {
+          "kind": "machine",
+          "reference": "path:README.md",
+          "proves": "The root README identifies and links both independent implementations and gives local test and run commands."
+        },
+        {
+          "kind": "human",
+          "reference": "Browser QA at http://127.0.0.1:8765/javascript/",
+          "proves": "Visual inspection confirmed the responsive interface renders; an interactive run converged after 1,300 epochs with correct XOR predictions."
+        },
+        {
+          "kind": "test",
+          "reference": "path:javascript/test/neural-network.test.js",
+          "proves": "The root test command executes the standalone implementation suite successfully.",
+          "command": "npm test",
+          "proof": "none"
+        }
+      ]
+    },
+    {
+      "id": "XOR-MONO-04",
+      "action": "Scan the consolidated repository for publishable-content risks, push the verified monorepo to public morrismarkw/xorNN, and confirm the remote result.",
+      "status": "working",
+      "evidence": []
+    },
+    {
+      "id": "XOR-MONO-05",
+      "action": "After remote verification, delete the private GitHub repositories morrismarkw/nn and morrismarkw/neuralnetwork and verify their removal.",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "XOR-MONO-06",
+      "action": "After all remote work is verified, discover local copies of xorNN, nn, and neuralnetwork and move the exact repository folders to the macOS Trash.",
+      "status": "pending",
+      "evidence": []
+    }
+  ]
+}
