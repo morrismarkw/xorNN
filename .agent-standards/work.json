@@ -60,13 +60,25 @@
     {
       "id": "XOR-MONO-04",
       "action": "Scan the consolidated repository for publishable-content risks, push the verified monorepo to public morrismarkw/xorNN, and confirm the remote result.",
-      "status": "working",
-      "evidence": []
+      "status": "done",
+      "evidence": [
+        {
+          "kind": "machine",
+          "reference": "commit:81eb1b596fd52333e4917189a69fab784e3c0a66",
+          "proves": "The tested monorepo commit was pushed to public xorNN main, and the GitHub tree API confirmed both implementation paths."
+        },
+        {
+          "kind": "reported",
+          "reference": "Credential-pattern and sensitive-filename scans over the staged diff",
+          "proves": "No secret-like filenames or credential patterns were reported; gitleaks was unavailable on this machine."
+        }
+      ],
+      "no_test_reason": "This item is an external publication and remote-state verification; implementation tests are recorded under XOR-MONO-02 and XOR-MONO-03."
     },
     {
       "id": "XOR-MONO-05",
       "action": "After remote verification, delete the private GitHub repositories morrismarkw/nn and morrismarkw/neuralnetwork and verify their removal.",
-      "status": "pending",
+      "status": "working",
       "evidence": []
     },
     {
